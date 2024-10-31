@@ -42,6 +42,14 @@
         .operation-toggle {
             margin: 20px 0;
         }
+        .sequence-display {
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -73,9 +81,11 @@
         </div>
 
         <div class="number-display" id="display"></div>
+        <div class="sequence-display" id="sequenceDisplay"></div>
         
         <button onclick="startExercise()" id="startButton">Start</button>
         <button onclick="showResult()" id="resultButton" style="display: none;">Show Result</button>
+        <button onclick="showSequence()" id="showSequenceButton" style="display: none;">Show Numbers</button>
     </div>
 
     <script>
@@ -100,6 +110,8 @@
             currentIndex = 0;
             document.getElementById('startButton').style.display = 'none';
             document.getElementById('resultButton').style.display = 'none';
+            document.getElementById('showSequenceButton').style.display = 'none';
+            document.getElementById('sequenceDisplay').style.display = 'none';
             
             const displayTime = parseFloat(document.getElementById('displayTime').value) * 1000;
 
@@ -133,8 +145,21 @@
 
             document.getElementById('display').textContent = result;
             document.getElementById('resultButton').style.display = 'none';
+            document.getElementById('showSequenceButton').style.display = 'inline';
             document.getElementById('startButton').style.display = 'inline';
             document.getElementById('startButton').textContent = 'Try Again';
+        }
+
+        function showSequence() {
+            const operation = document.getElementById('operation').value;
+            const sequenceDisplay = document.getElementById('sequenceDisplay');
+            let expressionText = numbers.join(operation === 'add' ? ' + ' : ' × ');
+            const result = operation === 'add' 
+                ? numbers.reduce((a, b) => a + b, 0)
+                : numbers.reduce((a, b) => a * b, 1);
+            
+            sequenceDisplay.textContent = `${expressionText} = ${result}`;
+            sequenceDisplay.style.display = 'block';
         }
     </script>
 </body>
