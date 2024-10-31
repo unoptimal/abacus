@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+        }
+        .number-display {
+            font-size: 72px;
+            height: 120px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        .controls div {
+            margin: 10px 0;
+        }
+        label {
+            display: inline-block;
+            width: 200px;
+            text-align: right;
+            margin-right: 10px;
+        }
+        button {
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .operation-toggle {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <div>
+                <label for="minNumber">Minimum number:</label>
+                <input type="number" id="minNumber" value="1">
+            </div>
+            <div>
+                <label for="maxNumber">Maximum number:</label>
+                <input type="number" id="maxNumber" value="10">
+            </div>
+            <div>
+                <label for="displayTime">Time per number (seconds):</label>
+                <input type="number" id="displayTime" value=".5" step="0.1">
+            </div>
+            <div>
+                <label for="count">Number of numbers:</label>
+                <input type="number" id="count" value="15">
+            </div>
+            <div class="operation-toggle">
+                <label for="operation">Operation:</label>
+                <select id="operation">
+                    <option value="add">Addition</option>
+                    <option value="multiply">Multiplication</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="number-display" id="display"></div>
+        
+        <button onclick="startExercise()" id="startButton">Start</button>
+        <button onclick="showResult()" id="resultButton" style="display: none;">Show Result</button>
+    </div>
+
+    <script>
+        let numbers = [];
+        let currentIndex = 0;
+        let displayInterval;
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function startExercise() {
+            const minNumber = parseInt(document.getElementById('minNumber').value);
+            const maxNumber = parseInt(document.getElementById('maxNumber').value);
+            const count = parseInt(document.getElementById('count').value);
+            
+            numbers = [];
+            for (let i = 0; i < count; i++) {
+                numbers.push(getRandomNumber(minNumber, maxNumber));
+            }
+
+            currentIndex = 0;
+            document.getElementById('startButton').style.display = 'none';
+            document.getElementById('resultButton').style.display = 'none';
+            
+            const displayTime = parseFloat(document.getElementById('displayTime').value) * 1000;
+
+            showNumber();
+
+            displayInterval = setInterval(() => {
+                currentIndex++;
+                if (currentIndex < numbers.length) {
+                    showNumber();
+                } else {
+                    clearInterval(displayInterval);
+                    document.getElementById('display').textContent = '';
+                    document.getElementById('resultButton').style.display = 'inline';
+                }
+            }, displayTime);
+        }
+
+        function showNumber() {
+            document.getElementById('display').textContent = numbers[currentIndex];
+        }
+
+        function showResult() {
+            const operation = document.getElementById('operation').value;
+            let result;
+            
+            if (operation === 'add') {
+                result = numbers.reduce((a, b) => a + b, 0);
+            } else {
+                result = numbers.reduce((a, b) => a * b, 1);
+            }
+
+            document.getElementById('display').textContent = result;
+            document.getElementById('resultButton').style.display = 'none';
+            document.getElementById('startButton').style.display = 'inline';
+            document.getElementById('startButton').textContent = 'Try Again';
+        }
+    </script>
+</body>
+</html>
